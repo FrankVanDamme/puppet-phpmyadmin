@@ -7,10 +7,10 @@ class phpmyadmin::params {
   #Class defaults
   $apache_name  = $::apache::params::apache_name
   $apache_group = $::apache::params::group
-  $disable_mod_security = hiera('phpmyadmin::disable_mod_security', false)
+  $disable_mod_security = lookup('phpmyadmin::disable_mod_security', Boolean, first, false)
 
   #Per OS variables
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat': {
       $package_name          = 'phpMyAdmin'
       $site_enable_dir       = $::apache::params::confd_dir
@@ -31,7 +31,7 @@ class phpmyadmin::params {
       $debconf_package       = 'debconf-utils'
     }
     default: {
-      fail("Class['phpmyadmin::params']: Unsupported OS: ${::osfamily}")
+      fail("Class['phpmyadmin::params']: Unsupported OS: ${::facts['os']['family']}")
     }
   }
 }
