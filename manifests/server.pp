@@ -33,26 +33,16 @@
 # Copyright 2013 Justice London, unless otherwise noted.
 #
 define phpmyadmin::server (
-  $blowfish_key      = md5("${::fqdn}${::ipaddress}"),
-  $resource_collect  = true,
-  $properties_iconic = 'FALSE',
-  $absolute_uri      = "http://${::fqdn}/phpmyadmin/",
-  $config_file       = $::phpmyadmin::params::config_file,
-  $data_dir          = $::phpmyadmin::params::data_dir,
-  $apache_group      = $::phpmyadmin::params::apache_group,
-  $package_name      = $::phpmyadmin::params::package_name,
+  String $blowfish_key                = md5("${facts[networking][fqdn]}${facts[networking][ip]}"),
+  Boolean $resource_collect           = true,
+  String $properties_iconic           = 'FALSE',
+  String $absolute_uri                = "http://${facts[networking][fqdn]}/phpmyadmin/",
+  Stdlib::Absolutepath $config_file   = $::phpmyadmin::params::config_file,
+  Stdlib::Absolutepath $data_dir      = $::phpmyadmin::params::data_dir,
+  String $apache_group                = $::phpmyadmin::params::apache_group,
+  String $package_name                = $::phpmyadmin::params::package_name,
 ) {
   include ::phpmyadmin::params
-
-  #Variable validations
-  validate_string($blowfish_key)
-  validate_string($absolute_uri)
-  validate_bool($resource_collect)
-  validate_string($properties_iconic)
-  validate_absolute_path($config_file)
-  validate_absolute_path($data_dir)
-  validate_string($apache_group)
-  validate_string($package_name)
 
   #Start by generating the config file using a template file
   concat { $config_file:

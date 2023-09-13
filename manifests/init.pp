@@ -29,25 +29,17 @@
 # Copyright 2013 Justice London, unless otherwise noted.
 #
 class phpmyadmin (
-  $enabled               = true,
-  $manage_apache         = true,
-  $manage_config         = true,
-  $ip_access_ranges      = ["${::ipaddress}/${::netmask}"],
-  $use_alias             = true,
-  $preseed_package       = $::phpmyadmin::params::preseed_package,
-  $package_name          = $::phpmyadmin::params::package_name,
-  $apache_default_config = $::phpmyadmin::params::apache_default_config,
-  $apache_name           = $::phpmyadmin::params::apache_name,
+  Boolean $enabled              = true,
+  Boolean $manage_apache        = true,
+  $manage_config                = true,
+  Array $ip_access_ranges       = ["${::ipaddress}/${::netmask}"],
+  $use_alias                    = true,
+  Boolean $preseed_package      = $::phpmyadmin::params::preseed_package,
+  String $package_name          = $::phpmyadmin::params::package_name,
+  String $apache_default_config = $::phpmyadmin::params::apache_default_config,
+  String $apache_name           = $::phpmyadmin::params::apache_name,
 ) inherits ::phpmyadmin::params {
 
-  #Variable validations
-  validate_bool($enabled)
-  validate_bool($manage_apache)
-  validate_array($ip_access_ranges)
-  validate_bool($preseed_package)
-  validate_string($package_name)
-  validate_string($apache_default_config)
-  validate_string($apache_name)
 
   #Hacky, but if we want to not break with an already included apache... override mpm
   #If someone knows how to actually get out-of-scope variables to properly inherit

@@ -49,37 +49,24 @@
 # Copyright 2013 Justice London, unless otherwise noted.
 #
 define phpmyadmin::vhost (
-  $ensure          = present,
-  $vhost_enabled   = true,
-  $priority        = '20',
-  $docroot         = $::phpmyadmin::params::doc_path,
-  $aliases         = '',
-  $vhost_name      = $name,
-  $ssl             = false,
-  $ssl_redirect    = false,
-  $ssl_cert        = '',
-  $ssl_key         = '',
-  $ssl_ca          = undef,
-  $ssl_cert_file   = '',
-  $ssl_key_file    = '',
-  $ssl_ca_file     = undef,
-  $conf_dir        = $::apache::params::conf_dir,
-  $conf_dir_enable = $::phpmyadmin::params::site_enable_dir,
+  Enum['present','absent'] $ensure      = present,
+  Boolean $vhost_enabled                = true,
+  String $priority                      = '20',
+  Stdlib::Absolutepath $docroot         = $::phpmyadmin::params::doc_path,
+  $aliases                              = '',
+  String $vhost_name                    = $name,
+  Boolean $ssl                          = false,
+  Boolean $ssl_redirect                 = false,
+  String $ssl_cert                      = '',
+  String $ssl_key                       = '',
+  $ssl_ca                               = undef,
+  $ssl_cert_file                        = '',
+  $ssl_key_file                         = '',
+  $ssl_ca_file                          = undef,
+  Stdlib::Absolutepath $conf_dir        = $::apache::params::conf_dir,
+  Stdlib::Absolutepath $conf_dir_enable = $::phpmyadmin::params::site_enable_dir,
 ) {
   include ::phpmyadmin
-
-  #Variable validations
-  validate_re($ensure, '^present$|^absent$')
-  validate_bool($vhost_enabled)
-  validate_string($priority)
-  validate_absolute_path($docroot)
-  validate_string($vhost_name)
-  validate_bool($ssl)
-  validate_bool($ssl_redirect)
-  validate_string($ssl_cert)
-  validate_string($ssl_key)
-  validate_absolute_path($conf_dir)
-  validate_absolute_path($conf_dir_enable)
 
   #If SSL is enabled, use 443 port by default
   case $ssl {
